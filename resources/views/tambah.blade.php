@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.jersey')
+@section('laracontent')
 <head>
 	<title>Tes</title>
 </head>
@@ -13,16 +13,20 @@
 	<br/>
 	<br/>
 
-	<form action="/jersey2/store" method="post">
+
+
+	
+
+	<form action="/jersey2/store" method="post" enctype="multipart/form-data">
 		{{ csrf_field() }}
-		id_jersey <input type="text" name="id_jersey" required="required"> <br/>
-		nama_club_jersey <input type="text" name="nama_club_jersey" required="required"> <br/>
-		ukuran jersey <input type="text" name="ukuran_jersey" required="required"> <br/>
-		gambar jersey <textarea name="gambar_jersey" required="required"></textarea> <br/>
-        deskripsi <textarea name="deskripsi" required="required"></textarea> <br/>
-        harga <textarea name="harga" required="required"></textarea> <br/>
-		<input type="submit" value="Simpan Data">
+		
+		nama_club_jersey <input class="form-control" type="text" name="nama_club_jersey" required="required"> <br/>
+		ukuran jersey <input class="form-control" type="text" name="ukuran_jersey" required="required"> <br/>
+		gambar jersey <input type="file" class="form-control" name="gambar_jersey" required="required"></textarea> <br/>
+        deskripsi <textarea class="form-control" name="deskripsi" required="required"></textarea> <br/>
+        harga <textarea  class="form-control" name="harga" required="required"></textarea> <br/>
+		<input type="submit" value="Simpan Data" class="btn btn-info">
 	</form>
 
 </body>
-</html>
+@endsection

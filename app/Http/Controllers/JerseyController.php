@@ -6,12 +6,17 @@ use Illuminate\Http\Request;
 use App\Jersey;
 
 
-class jersey_controller extends Controller
+class JerseyController extends Controller
 {
     //
     public function index()
     {
         $datajersey = Jersey::all();
-        return view('jersey', compact('datajersey'));
+        return view('jersey2', compact('datajersey'));
     }
+
+    public function maps(){
+        return view('maps');
+    }
+
 }

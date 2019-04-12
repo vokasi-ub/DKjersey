@@ -25,7 +25,7 @@ class CreateJualTable extends Migration
         });
    
    Schema::create('jersey', function (Blueprint $table) {
-           $table->integer('id_jersey');
+           $table->bigIncrements('id_jersey');
            $table->string('nama_club_jersey');
            $table->string('ukuran_jersey');
            $table->string('gambar_jersey');
@@ -36,9 +36,8 @@ class CreateJualTable extends Migration
 
        
         Schema::create('pembeli', function (Blueprint $table) {
-            $table->integer('id_pembeli');
+            $table->bigIncrements('id_pembeli');
             $table->string('nama_pelanggan');
-            $table->String('nama_barang');
             $table->string('alamat');
             $table->string('no_telp');
         });
@@ -46,6 +45,8 @@ class CreateJualTable extends Migration
        Schema::create('transaksi', function (Blueprint $table) {
            $table->integer('id');
            $table->string('id_pembeli');
+           $table->unsignedBigInteger('id_jersey');
+           $table->foreign('id_jersey')->references('id_jersey')->on('jersey')->onDelete('cascade');
            $table->String('nama_barang');
            $table->string('tanggal_transaksi');
            $table->string('quantity');
@@ -64,5 +65,6 @@ class CreateJualTable extends Migration
     public function down()
     {
         Schema::dropIfExists('jual');
+        $table->dropForeign(['id_jersey']);
     }
 }

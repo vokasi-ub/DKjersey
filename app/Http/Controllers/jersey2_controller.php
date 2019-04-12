@@ -13,8 +13,8 @@ class jersey2_controller extends Controller
     //
     public function index()
     {
-        $datajersey2 = Jersey2::all();
-        return view('jersey2', compact('datajersey2'));
+        $datajersey = Jersey2::all();
+        return view('jersey2', compact('datajersey'));
     }
 
 
@@ -39,45 +39,90 @@ class jersey2_controller extends Controller
 
 
 public function store(Request $request)
+
 {
 
-	DB::table('jersey')->insert([
-		'id_jersey' => $request->id_jersey,
-		'nama_club_jersey' => $request->nama_club_jersey,
-		'ukuran_jersey' => $request->ukuran_jersey,
-        'gambar_jersey' => $request->gambar_jersey,
-        'deskripsi' => $request->deskripsi,
-        'harga' => $request->harga
-	]);
+$imageName = time().'.'.$request->gambar_jersey->getClientOriginalExtension();
+$request->gambar_jersey->move(public_path('image'), $imageName);
 
-	return redirect('/jersey2');
+$datajersey = Jersey2::create([
+'nama_club_jersey' => $request->input('nama_club_jersey'),
+'ukuran_jersey' => $request->input('ukuran_jersey'),
+'gambar_jersey' =>$imageName,
+'deskripsi' => $request->input('deskripsi'),
+'harga' => $request->input('harga')
 
+]);
+
+
+$datajersey->save();
+return redirect('/jersey2');
 }
 
-public function edit($id)
+
+public function edit($id_jersey)
 {
 	// mengambil data pegawai berdasarkan id yang dipilih
-	$jersey = DB::table('jersey')->where('id_jersey',$id)->get();
+	$jersey = Jersey2::find($id_jersey);
 	// passing data pegawai yang didapat ke view edit.blade.php
-	return view('edit',['jersey2' => $jersey]);
+	return view('edit', compact('jersey'));
  
 
 }
 
-// update data pegawai
+// update data 
 public function update(Request $request)
 {
-	// update data pegawai
-	DB::table('jersey')->where('id_jersey',$request->id)->update([
-        'id_jersey' => $request->id_jersey,
+
+	if(!empty($request->gambar_jersey)){
+		$image = $request->file('gambar_jersey');
+		$imageName = $image->getClientOriginalName();
+		$image->move(public_path('image'), $imageName);
+
+		Jersey2::where('id_jersey',$request->id)->update([
+       
+			'nama_club_jersey' => $request->nama_club_jersey,
+			'ukuran_jersey' => $request->ukuran_jersey,
+			'gambar_jersey' => $imageName,
+			'deskripsi' => $request->deskripsi,
+			'harga' => $request->harga
+		]);
+
+
+	}else {
+	
+	Jersey2::where('id_jersey',$request->id)->update([
+       
 		'nama_club_jersey' => $request->nama_club_jersey,
 		'ukuran_jersey' => $request->ukuran_jersey,
-        'gambar_jersey' => $request->gambar_jersey,
         'deskripsi' => $request->deskripsi,
         'harga' => $request->harga
 	]);
+
+	}
+	
+	return redirect('/jersey2');
+}
+
+// method untuk hapus data 
+public function hapus($id)
+{
+	// menghapus data berdasarkan id yang dipilih
+	DB::table('jersey')->where('id_jersey',$id)->delete();
+		
 	// alihkan halaman ke halaman pegawai
 	return redirect('/jersey2');
 }
+
+public function cari(Request $request)
+    {
+        $query = $request->get('row');
+        $datajersey = Jersey2::where('nama_club_jersey', 'LIKE', '%' . $query . '%')->paginate(10);
+
+        return view('jersey2', compact('datajersey', 'query'));
+    }
+
+
+	
 
 }
